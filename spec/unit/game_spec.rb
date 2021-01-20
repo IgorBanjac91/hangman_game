@@ -10,7 +10,9 @@ module Hangman
                               [' ', ' ', ' ', ' ', '|'],
                               [' ', ' ', ' ', ' ', '|'],
                               ['_', '_', '_', '_', '|']] }
+
     let(:game) { Game.new }
+    let(:new_game) { Game.new word: "example"}
   
     describe '#initialize' do 
       context "when correctly initialized" do
@@ -43,7 +45,19 @@ module Hangman
     end
 
     describe '#guess_character' do
-      context 'when correct'
+      context "when the charcater doesn't match the word to guess characters" do 
+        it 'adds the character to the wrong guessed characters instance variable' do
+          new_game.guess_character("z")
+          expect(new_game.wrong_guessed_characters).to include("z")
+        end
+      end
+
+      context 'when the character match the word to guess characters' do 
+        it 'switchs the undersocre of the guessing line with the charcter an puts it on the right position' do
+          new_game.guess_character("e") 
+          expect(new_game.guessing_line).to eq(["e", "_", "_", "_", "_", "_", "e"])
+        end
+      end
     end
   end
 end

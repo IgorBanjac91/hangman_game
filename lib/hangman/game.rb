@@ -1,12 +1,13 @@
 module Hangman
   class Game
-    attr_accessor :board, :guessing_line
+    attr_accessor :board, :guessing_line, :wrong_guessed_characters
     attr_reader :word_to_guess, :file_name
+
     def initialize(input = {})
       @board = input.fetch(:board, Board.new)
       @file_name = input.fetch(:file_name, "dictionary.txt")
-      @word_to_guess = input.fetch(:word, random_word_from_dictionary(file_name))
-      @guessed_characters = []
+      @word_to_guess = input.fetch(:word, random_word_from_dictionary(file_name)).chars
+      @wrong_guessed_characters = []
       @guessing_line = set_guessing_line
     end
 
@@ -14,6 +15,18 @@ module Hangman
       words = File.read(file_name).split.select { |word| word.size.between?(5, 12)  }
       random_index = rand(words.size)
       words[random_index]
+    end
+      
+    def guess_character(char)
+      if word_to_guess.include?(char)
+        word_to_guess.each_with_index do |val, index|
+          if val == char
+            guessing_line[index] = val
+          end
+        end
+      else
+        wrong_guessed_characters << char
+      end
     end
 
       private
