@@ -38,10 +38,33 @@ module Hangman
       puts guessing_line.join(' ')
     end
 
+    def display_game
+      board.display_drawing
+      puts display_guessing_line
+      puts "\nWrong characters"
+      puts display_wrong_guessed_characters
+    end
+
     def game_over
       return :win if win?
       return :lose if lose?
       false
+    end
+
+    def play
+      puts "\nLets start the game, Save the man!!"
+      until game_over
+        display_game
+        puts "Chose a character:"
+        char = gets.chomp
+        guess_character(char)
+      end
+       
+      if game_over == :win
+        puts "Congratulations, You Won The Game"
+      else
+        puts "GAME OVER"
+      end
     end
 
       private
