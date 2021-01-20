@@ -1,5 +1,6 @@
 require 'spec_helper'
 require_relative '../../lib/hangman'
+require 'stringio'
 
 module Hangman
   RSpec.describe Game do
@@ -50,6 +51,13 @@ module Hangman
           new_game.guess_character("z")
           expect(new_game.wrong_guessed_characters).to include("z")
         end
+
+        it 'adds a piece to the drawing' do 
+          new_game.guess_character("z")
+          board = new_game.board
+          head_part = board.drawing[2][1]
+          expect(head_part).to eq('0')
+        end
       end
 
       context 'when the character match the word to guess characters' do 
@@ -57,6 +65,20 @@ module Hangman
           new_game.guess_character("e") 
           expect(new_game.guessing_line).to eq(["e", "_", "_", "_", "_", "_", "e"])
         end
+      end
+    end
+
+    describe '#game_over' do 
+      it 'returns :win if the player has guessed the word' do 
+        new_game
+        new_game.guessing_line = "example".chars
+        expect(new_game.game_over).to eq(:win)
+      end
+
+      it 'returns :lost if the player has finished the moves' do 
+        new_game
+        6.times { new_game.board.add_piece }
+        expect(new_game.game_over).to eq(:lose)
       end
     end
   end

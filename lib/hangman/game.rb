@@ -26,10 +26,33 @@ module Hangman
         end
       else
         wrong_guessed_characters << char
+        board.add_piece
       end
     end
 
+    def display_wrong_guessed_characters
+      puts wrong_guessed_characters.join(' ')
+    end
+
+    def display_guessing_line
+      puts guessing_line.join(' ')
+    end
+
+    def game_over
+      return :win if win?
+      return :lose if lose?
+      false
+    end
+
       private
+
+      def win?
+        true if word_to_guess == guessing_line
+      end
+
+      def lose?
+        true if board.full?
+      end
 
       def set_guessing_line
         Array.new(word_to_guess.size) { "_" }
