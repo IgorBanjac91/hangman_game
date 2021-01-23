@@ -1,3 +1,5 @@
+require 'json'
+
 module Hangman
   class Game
     attr_accessor :board, :guessing_line, :wrong_guessed_characters
@@ -7,8 +9,8 @@ module Hangman
       @board = input.fetch(:board, Board.new)
       @file_name = input.fetch(:file_name, "dictionary.txt")
       @word_to_guess = input.fetch(:word, random_word_from_dictionary(file_name)).chars
-      @wrong_guessed_characters = []
-      @guessing_line = set_guessing_line
+      @wrong_guessed_characters = input.fetch(:wrong_guessed_characters, [])
+      @guessing_line = input.fetch(:guessing_line, set_guessing_line)
     end
 
     def random_word_from_dictionary(file_name)
@@ -55,15 +57,22 @@ module Hangman
       puts "\nLets start the game, Save the man!!"
       until game_over
         display_game
-        puts "Chose a character:"
+        puts "Chose a character or type 1 to save the game:"
         char = gets.chomp
-        guess_character(char)
+        if char == '1'
+          save_game
+          break
+        else
+          guess_character(char)
+        end
       end
-       
+      display_game
       if game_over == :win
         puts "Congratulations, You Won The Game"
-      else
+      elsif game_over == :lose
         puts "GAME OVER"
+      else
+        puts "Game Saved!"
       end
     end
 
@@ -79,6 +88,18 @@ module Hangman
 
       def set_guessing_line
         Array.new(word_to_guess.size) { "_" }
+      end
+
+      def save_game
+        saving = { saving_date: Time.now,
+                     data: {
+                       board_drawing: @board.drawing,    
+                       word: @word_to_guess.join(),
+                       guessing_line: @guessing_line, 
+                       wrong_guessed_characters: @wrong_guessed_characters}}
+        File.open("savings.txt", "a") do |f|
+          f.puts saving.to_json
+        end
       end
   end
 end

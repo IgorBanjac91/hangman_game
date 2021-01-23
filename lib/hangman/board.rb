@@ -2,8 +2,8 @@
 module Hangman
   class Board
     attr_accessor :drawing
-    def initialize
-      @drawing = default_drawing
+    def initialize(input = {} )
+      @drawing = input.fetch(:drawing, default_drawing)
     end
      
     def default_drawing
